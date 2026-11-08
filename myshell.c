@@ -3,17 +3,17 @@
 #define BUFFER_SIZE 10
 
 char buf[BUFFER_SIZE];
-char *home_path, *working_dir, *word;
+char *word;
 int home_path_len;
 int interactive = 0;
 
 command *cmd_start;
 
 void print_prompt(){
-	if(!strcmp(home_path, working_dir))
-		printf("~%s$ ", working_dir+home_path_len);
+	if(!strncmp(cwd, home_path, home_path_len))
+		printf("~%s$ ", cwd+home_path_len);
 	else
-		printf("%s$ ", working_dir);
+		printf("%s$ ", cwd);
 	fflush(stdout);
 }
 
@@ -57,7 +57,8 @@ int main(int argc, char **argv){
 	//setup
 	home_path = getenv("HOME");
 	home_path_len = strlen(home_path);
-	working_dir = getenv("HOME");
+	if(getcwd(cwd, sizeof(cwd)) == NULL)
+		perror("cwd too small");
 	int word_max = 50, word_cur = 0;
 	word = malloc(word_max+1);
 	size_t rd;
