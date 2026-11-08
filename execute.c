@@ -5,8 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-int main(void)
-{
+typedef struct command{
+	char *arg;
+	struct command *next;
+}command;
+
+int execute(command *start, int len){
     char *input[] = {"/bin/echo", "hello", NULL};
 
     // build in input check + execute
