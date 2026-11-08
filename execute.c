@@ -10,9 +10,7 @@ typedef struct command{
 	struct command *next;
 }command;
 
-int execute(command *start, int len){
-    char *input[] = {"/bin/echo", "hello", NULL};
-
+int child_run(char **input){
     // build in input check + execute
     if (strcmp(input[0], "cd") == 0)
     {
@@ -135,5 +133,63 @@ int execute(command *start, int len){
             }
         } 
     }
-    return 0;
+	return 0;
+}
+
+int run(command *start, int cnt, int *prev_pipe, int is_pipe){
+	char **input = malloc(sizeof(char*)*(cnt+1));
+	for(int i=0;i<cnt;++i){
+		input[i] = start->arg;
+		start = start->next;
+	}
+	input[cnt] = NULL;
+	int p[2];
+	if(is_pipe){
+		if(pipe(p) == -1) return 0;
+	}
+
+	int c = fork();
+	if(c == -1) return 0;
+	if(c == 0){
+		if(*prev_pipe != -1){
+			if(dup2(*prev_pipe, STDIN_FILENO) == -1) abort();
+			close(*prev_pipe);
+		}
+		if(is_pipe){
+			if(dup2(p[1], STDOUT_FILENO) == -1) abort();
+			close(p[1]);
+			*prev_pipe = p[0];
+		}
+		child_run(input);
+		abort();
+	}
+	free(input);
+	return 1;
+}
+
+int execute(command *start){
+	int prev_pipe = -1;
+	int cmd_cnt = 0;
+	while(start){
+		command *tmp = start;
+		int cnt = 0;
+		cmd_cnt++;
+		while(tmp){
+			if(!strcmp(tmp->arg, "|")){
+				if(!run(start, cnt, &prev_pipe, 1)) return 0;
+				start = tmp->next;
+				break;
+			}
+			else{
+				tmp = tmp->next;
+				cnt++;
+			}
+		}
+		if(!tmp){
+			if(!run(start, cnt, &prev_pipe, 0)) return 0;
+			start = tmp;
+		}
+	}
+	while(cmd_cnt--) wait(NULL);
+	return 1;
 }

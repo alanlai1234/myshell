@@ -5,7 +5,7 @@
 char buf[BUFFER_SIZE];
 char *home_path, *working_dir, *word;
 int home_path_len;
-int interactive = 0, cmd_len = 0;
+int interactive = 0;
 
 command *cmd_start;
 
@@ -17,18 +17,11 @@ void print_prompt(){
 	fflush(stdout);
 }
 
-// void execute(command *start){
-// 	while(start){
-// 		printf("%s\n", start->arg);
-// 		start = start->next;
-// 	}
-// }
-
 command* add_arg(char *arg, int len, command *end){
 	if(len == 0) return end;
-	cmd_len++;
-	end->next = malloc(sizeof(command));
+	if(end->next == NULL) end->next = malloc(sizeof(command));
 	end = end->next;
+	if(end->arg) free(end->arg);
 	end->arg = malloc(sizeof(char)*(len+1));
 	arg[len] = '\0';
 	strcpy(end->arg, arg);
@@ -36,8 +29,6 @@ command* add_arg(char *arg, int len, command *end){
 }
 
 void cleanup(){
-	free(home_path);
-	free(working_dir);
 	free(word);
 	while(cmd_start){
 		command *tmp = cmd_start;
@@ -45,9 +36,11 @@ void cleanup(){
 		free(tmp->arg);
 		free(tmp);
 	}
+	if(interactive) printf("Exiting myshell\n");
 }
 
 int main(int argc, char **argv){
+	atexit(cleanup);
 	if(argc>1){
 		int fd = open(argv[1], O_RDONLY);
 		if(fd < 0){
@@ -80,14 +73,12 @@ int main(int argc, char **argv){
 					cmd_end = add_arg(word, word_cur, cmd_end);
 					word_cur = 0;
 				}
-				execute(cmd_start->next, cmd_len);
+				execute(cmd_start->next);
 				//tmp
 				if(!strcmp(cmd_start->next->arg, "exit")){
-					if(interactive) printf("Exiting myshell\n");
 					exit(EXIT_SUCCESS);
 				}
 
-				cmd_len = 0;
 				cmd_end = cmd_start;
 				if(interactive) print_prompt();
 			}
@@ -133,6 +124,4 @@ int main(int argc, char **argv){
 
 		}
 	}
-
-	atexit(cleanup);
 }
