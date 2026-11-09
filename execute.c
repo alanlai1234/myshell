@@ -13,34 +13,19 @@ typedef struct command{
 
 char *home_path, cwd[1024];
 
-int child_run(char **input){
-	return 1;
-    // build in input check + execute
-    if (strcmp(input[0], "cd") == 0)
-    {
-        getcwd(cwd, sizeof(cwd));
-        printf("before cd: %s", cwd);
-
-        if (input[1] == NULL)
-        {
-            if (chdir(getenv("HOME")) == -1)
-            {
-                perror("cd");
-            }
-        }
-        else if (input[2] != NULL)
-        {
-            fprintf(stderr, "cd: too many arguments\n");
-        }
-        else
-        {
-            // 剛好一個 argument
-            if (chdir(input[1]) == -1)
-            {
-                perror("cd");
-            }
-        }
-    }
+int child_run(char **input, int len){
+	// still run built in commands here to simplify exit status processing
+	if(!strcmp(input[0], "exit")){
+		return 0;
+	}
+	else if(!strcmp(input[0], "cd")){
+		if(len > 2) return 1;
+		else if (input[1] == NULL){
+			if (chdir(getenv("HOME")) == -1) return 1;
+		}
+		else if (chdir(input[1]) == -1) return 1;
+		return 0;
+	}
     else
     {
         //====================================================================
@@ -77,7 +62,7 @@ int child_run(char **input){
                 {
                     execv(input[0], input);
 
-                     perror("execv");
+                    perror("execv");
                     _exit(1);
                 }
                 else
@@ -139,21 +124,32 @@ int child_run(char **input){
 	return 0;
 }
 
-int run(command *start, int cnt, int *prev_pipe, int is_pipe){
+void cmd_cd(char **input, int len){
+	if(len > 2) printf("cd: too many arguments\n");
+	else if (input[1] == NULL){
+		if (chdir(getenv("HOME")) == -1) perror("cd");
+	}
+	else if (chdir(input[1]) == -1) perror("cd");
+	if(getcwd(cwd, sizeof(cwd)) == NULL) printf("cwd too small\n");
+}
+
+int run(command *start, int cnt, int *prev_pipe, int is_pipe, int *isexit){
 	char **input = malloc(sizeof(char*)*(cnt+1));
 	for(int i=0;i<cnt;++i){
 		input[i] = start->arg;
 		start = start->next;
-		// printf("%s\n", input[i]);
 	}
 	input[cnt] = NULL;
+
+	*isexit |= !strcmp(input[0], "exit");
+
 	int p[2];
 	if(is_pipe){
-		if(pipe(p) == -1) return 0;
+		if(pipe(p) == -1) return -1;
 	}
 
 	int c = fork();
-	if(c == -1) return 0;
+	if(c == -1) return -1;
 	if(c == 0){
 		if(*prev_pipe != -1){
 			if(dup2(*prev_pipe, STDIN_FILENO) == -1) abort();
@@ -164,11 +160,14 @@ int run(command *start, int cnt, int *prev_pipe, int is_pipe){
 			close(p[1]);
 			*prev_pipe = p[0];
 		}
-		child_run(input);
-		abort();
+		int ret = child_run(input, cnt);
+		_exit(ret);
 	}
+
+	if(!strcmp(input[0], "cd") && !is_pipe) cmd_cd(input, cnt);
+
 	free(input);
-	return 1;
+	return c;
 }
 
 command* process_wildcard(command *cur, int *total){
@@ -249,16 +248,19 @@ command* process_wildcard(command *cur, int *total){
 	return cur;
 }
 
-int execute(command *start){
+int execute(command *start, command *end){
 	int prev_pipe = -1;
 	int cmd_cnt = 0;
-	while(start){
+	int last_pid, exits = 0;
+	while(start!=end){
 		command *tmp = start;
 		int cnt = 0;
 		cmd_cnt++;
-		while(tmp){
+		while(tmp!=end){
 			if(!strcmp(tmp->arg, "|")){
-				if(!run(start, cnt, &prev_pipe, 1)) return 0;
+				int rt = run(start, cnt, &prev_pipe, 1, &exits);
+				if(rt == -1) perror("failed to create child process or pipe\n");
+				else cmd_cnt++, last_pid = rt;
 				start = tmp->next;
 				break;
 			}
@@ -268,11 +270,21 @@ int execute(command *start){
 				cnt++;
 			}
 		}
-		if(!tmp){
-			if(!run(start, cnt, &prev_pipe, 0)) return 0;
+		if(tmp==end){
+			int rt = run(start, cnt, &prev_pipe, 0, &exits);
+			if(rt == -1) perror("failed to create child process or pipe\n");
+			else cmd_cnt++, last_pid = rt;
 			start = tmp;
 		}
 	}
+	int last_status;
+	// last_pid is -1 only if last cmd is cd
+	waitpid(last_pid, &last_status, 0);
+	cmd_cnt--;
 	while(cmd_cnt--) wait(NULL);
-	return 1;
+	//0:fail, 1:success, 2:fail+exit, 3:success+exit
+	// printf("%d\n", last_status);
+	last_status = WEXITSTATUS(last_status);
+	if(exits) last_status += 2;
+	return last_status;
 }
