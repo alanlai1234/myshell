@@ -63,11 +63,7 @@ int child_run(char **input, int len)
             fprintf(stderr, "pwd: too many arguments\n");
             return 1;
         }
-        if (getcwd(path, sizeof(path)) == NULL) {
-            perror("pwd");
-            return 1;
-        }
-        return dprintf(STDOUT_FILENO, "%s\n", path) < 0 ? 1 : 0;
+        return dprintf(STDOUT_FILENO, "%s\n", cwd) < 0 ? 1 : 0;
     }
 
     if (strcmp(input[0], "which") == 0) {
@@ -124,21 +120,19 @@ int run(command *start, int cnt, int *prev_pipe, int is_pipe, int *isexit){
 	*isexit |= !strcmp(input[0], "exit");
 
 	int p[2];
-	if(is_pipe){
-		if(pipe(p) == -1) return -1;
-	}
+	if(is_pipe) if(pipe(p) == -1) return -1;
 
 	int c = fork();
 	if(c == -1) return -1;
 	if(c == 0){
 		if(*prev_pipe != -1){
-			if(dup2(*prev_pipe, STDIN_FILENO) == -1) abort();
+			if(dup2(*prev_pipe, STDIN_FILENO) == -1) _exit(1);
 			close(*prev_pipe);
 		}
 		if(is_pipe){
-			if(dup2(p[1], STDOUT_FILENO) == -1) abort();
+			if(dup2(p[1], STDOUT_FILENO) == -1) _exit(1);
 			close(p[1]);
-			*prev_pipe = p[0];
+			close(p[0]);
 		}
 		int ret = child_run(input, cnt);
 		_exit(ret);
@@ -146,6 +140,10 @@ int run(command *start, int cnt, int *prev_pipe, int is_pipe, int *isexit){
 
 	if(!strcmp(input[0], "cd") && !is_pipe) cmd_cd(input, cnt);
 
+	if(is_pipe){
+		*prev_pipe = p[0];
+		close(p[1]);
+	}
 	free(input);
 	return c;
 }
@@ -258,12 +256,11 @@ int execute(command *start, command *end){
 		}
 	}
 	int last_status;
-	// last_pid is -1 only if last cmd is cd
+	//TODO: handle failed wait
 	waitpid(last_pid, &last_status, 0);
 	cmd_cnt--;
 	while(cmd_cnt--) wait(NULL);
 	//0:fail, 1:success, 2:fail+exit, 3:success+exit
-	// printf("%d\n", last_status);
 	last_status = WEXITSTATUS(last_status);
 	if(exits) last_status += 2;
 	return last_status;

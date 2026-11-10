@@ -58,7 +58,7 @@ int main(int argc, char **argv){
 	home_path = getenv("HOME");
 	home_path_len = strlen(home_path);
 	if(getcwd(cwd, sizeof(cwd)) == NULL)
-		printf("cwd too small\n");
+		perror("getcwd:");
 	int word_max = 50, word_cur = 0;
 	word = malloc(word_max+1);
 	size_t rd;
@@ -75,7 +75,7 @@ int main(int argc, char **argv){
 					word_cur = 0;
 				}
 				int ret = execute(cmd_start->next, cmd_end->next);
-				if(ret == 1 || ret == 3) printf("failed to execute\n");
+				// if(ret == 1 || ret == 3) printf("failed to execute\n");
 				if(ret > 1){
 					exit(EXIT_SUCCESS);
 				}
