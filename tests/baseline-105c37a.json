@@ -1,0 +1,1708 @@
+{
+  "schema_version": 1,
+  "platform": "macOS-26.6-arm64-arm-64bit",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "shell": "<REVIEW_ROOT>/source/myshell",
+  "shell_sha256": "24c7de48f94574c917dc0c0efee6da5606bfc1870abc25bb7e34d1ee202eed3e",
+  "suite": "all",
+  "summary": {
+    "pass": 85,
+    "fail": 15
+  },
+  "tests": [
+    {
+      "name": "empty_stdin",
+      "group": "core",
+      "purpose": "empty_stdin",
+      "status": "pass",
+      "duration_seconds": 0.0039,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "blank_lines",
+      "group": "core",
+      "purpose": "blank_lines",
+      "status": "pass",
+      "duration_seconds": 0.0031,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "\n \n   \n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "echo_single",
+      "group": "core",
+      "purpose": "echo_single",
+      "status": "pass",
+      "duration_seconds": 0.0052,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo hello\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "hello\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "echo_many_args",
+      "group": "core",
+      "purpose": "echo_many_args",
+      "status": "pass",
+      "duration_seconds": 0.004,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo alpha beta gamma\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alpha beta gamma\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "repeated_spaces",
+      "group": "core",
+      "purpose": "repeated_spaces",
+      "status": "pass",
+      "duration_seconds": 0.0047,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "   echo   alpha    beta   \n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alpha beta\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "absolute_executable",
+      "group": "core",
+      "purpose": "absolute_executable",
+      "status": "pass",
+      "duration_seconds": 0.0051,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "/bin/echo absolute\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "absolute\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "commands_continue_after_false",
+      "group": "core",
+      "purpose": "commands_continue_after_false",
+      "status": "pass",
+      "duration_seconds": 0.0061,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "/usr/bin/false\necho alive\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alive\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "comments_full_line",
+      "group": "core",
+      "purpose": "comments_full_line",
+      "status": "pass",
+      "duration_seconds": 0.0046,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "# comment\necho alive\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alive\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "comments_after_command",
+      "group": "core",
+      "purpose": "comments_after_command",
+      "status": "pass",
+      "duration_seconds": 0.0046,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo alive # ignored\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alive\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "comments_pipe_ignored",
+      "group": "core",
+      "purpose": "comments_pipe_ignored",
+      "status": "pass",
+      "duration_seconds": 0.0044,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo alive # | never_executed\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alive\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "exit_stops_following_command",
+      "group": "core",
+      "purpose": "exit_stops_following_command",
+      "status": "pass",
+      "duration_seconds": 0.0048,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo before\nexit\necho after\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "before\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "one_pipe",
+      "group": "core",
+      "purpose": "one_pipe",
+      "status": "pass",
+      "duration_seconds": 0.005,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo hello | /bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "hello\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "three_stage_pipe",
+      "group": "core",
+      "purpose": "three_stage_pipe",
+      "status": "pass",
+      "duration_seconds": 0.0054,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo hello | /bin/cat | /bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "hello\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "adjacent_pipe_operator",
+      "group": "core",
+      "purpose": "adjacent_pipe_operator",
+      "status": "pass",
+      "duration_seconds": 0.0041,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo hello|/bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "hello\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pipeline_empty_producer",
+      "group": "core",
+      "purpose": "pipeline_empty_producer",
+      "status": "pass",
+      "duration_seconds": 0.0047,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "/usr/bin/true | /bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pwd",
+      "group": "core",
+      "purpose": "pwd",
+      "status": "pass",
+      "duration_seconds": 0.0039,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "pwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "cd_relative",
+      "group": "core",
+      "purpose": "cd_relative",
+      "status": "pass",
+      "duration_seconds": 0.0041,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd sub\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>/sub\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "cd_parent",
+      "group": "core",
+      "purpose": "cd_parent",
+      "status": "pass",
+      "duration_seconds": 0.0051,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd sub\ncd ..\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "cd_absolute",
+      "group": "core",
+      "purpose": "cd_absolute",
+      "status": "pass",
+      "duration_seconds": 0.0038,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd <CASE_TMP>/home\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>/home\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "cd_home",
+      "group": "core",
+      "purpose": "cd_home",
+      "status": "pass",
+      "duration_seconds": 0.0042,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>/home\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pwd_in_pipeline",
+      "group": "core",
+      "purpose": "pwd_in_pipeline",
+      "status": "pass",
+      "duration_seconds": 0.0068,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "pwd | /bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "args_exact",
+      "group": "core",
+      "purpose": "args_exact",
+      "status": "pass",
+      "duration_seconds": 0.1452,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe args one two three\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[one]\n[two]\n[three]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "argument_grows_past_50",
+      "group": "core",
+      "purpose": "argument_grows_past_50",
+      "status": "pass",
+      "duration_seconds": 0.0048,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe args aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "many_arguments",
+      "group": "core",
+      "purpose": "many_arguments",
+      "status": "pass",
+      "duration_seconds": 0.0047,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe args v0 v1 v2 v3 v4 v5 v6 v7 v8 v9 v10 v11 v12 v13 v14 v15 v16 v17 v18 v19 v20 v21 v22 v23 v24 v25 v26 v27 v28 v29 v30 v31 v32 v33 v34 v35 v36 v37 v38 v39 v40 v41 v42 v43 v44 v45 v46 v47 v48 v49 v50 v51 v52 v53 v54 v55 v56 v57 v58 v59 v60 v61 v62 v63 v64 v65 v66 v67 v68 v69 v70 v71 v72 v73 v74 v75 v76 v77 v78 v79 v80 v81 v82 v83 v84 v85 v86 v87 v88 v89 v90 v91 v92 v93 v94 v95 v96 v97 v98 v99\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[v0]\n[v1]\n[v2]\n[v3]\n[v4]\n[v5]\n[v6]\n[v7]\n[v8]\n[v9]\n[v10]\n[v11]\n[v12]\n[v13]\n[v14]\n[v15]\n[v16]\n[v17]\n[v18]\n[v19]\n[v20]\n[v21]\n[v22]\n[v23]\n[v24]\n[v25]\n[v26]\n[v27]\n[v28]\n[v29]\n[v30]\n[v31]\n[v32]\n[v33]\n[v34]\n[v35]\n[v36]\n[v37]\n[v38]\n[v39]\n[v40]\n[v41]\n[v42]\n[v43]\n[v44]\n[v45]\n[v46]\n[v47]\n[v48]\n[v49]\n[v50]\n[v51]\n[v52]\n[v53]\n[v54]\n[v55]\n[v56]\n[v57]\n[v58]\n[v59]\n[v60]\n[v61]\n[v62]\n[v63]\n[v64]\n[v65]\n[v66]\n[v67]\n[v68]\n[v69]\n[v70]\n[v71]\n[v72]\n[v73]\n[v74]\n[v75]\n[v76]\n[v77]\n[v78]\n[v79]\n[v80]\n[v81]\n[v82]\n[v83]\n[v84]\n[v85]\n[v86]\n[v87]\n[v88]\n[v89]\n[v90]\n[v91]\n[v92]\n[v93]\n[v94]\n[v95]\n[v96]\n[v97]\n[v98]\n[v99]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "batch_mode",
+      "group": "core",
+      "purpose": "batch_mode",
+      "status": "pass",
+      "duration_seconds": 0.0054,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo batch\npwd\n",
+          "mode": "batch",
+          "returncode": 0,
+          "stdout": "batch\n<CASE_TMP>\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "missing_batch_file",
+      "group": "core",
+      "purpose": "missing_batch_file",
+      "status": "pass",
+      "duration_seconds": 0.0033,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "",
+          "mode": "stdin",
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "<CASE_TMP>/absent: No such file or directory\n"
+        }
+      ]
+    },
+    {
+      "name": "relative_executable",
+      "group": "core",
+      "purpose": "relative_executable",
+      "status": "pass",
+      "duration_seconds": 0.0041,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "./local_probe args local\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[local]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "which_found",
+      "group": "core",
+      "purpose": "which_found",
+      "status": "pass",
+      "duration_seconds": 0.0031,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "which echo\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "/bin/echo\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "which_absolute",
+      "group": "core",
+      "purpose": "which_absolute",
+      "status": "pass",
+      "duration_seconds": 0.0035,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "which <TOOLS_TMP>/probe\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<TOOLS_TMP>/probe\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "which_multiple",
+      "group": "core",
+      "purpose": "which_multiple",
+      "status": "pass",
+      "duration_seconds": 0.0036,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "which echo <TOOLS_TMP>/probe\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "/bin/echo\n<TOOLS_TMP>/probe\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "unknown_command_recovers",
+      "group": "core",
+      "purpose": "unknown_command_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0045,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "zz_myshell_missing_command_701\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "zz_myshell_missing_command_701: command not found\n"
+        }
+      ]
+    },
+    {
+      "name": "nonexistent_path_recovers",
+      "group": "core",
+      "purpose": "nonexistent_path_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0043,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "./missing_program\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "./missing_program: No such file or directory\n"
+        }
+      ]
+    },
+    {
+      "name": "which_missing_argument_recovers",
+      "group": "core",
+      "purpose": "which_missing_argument_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0047,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "which\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "which: missing argument\n"
+        }
+      ]
+    },
+    {
+      "name": "which_unknown_recovers",
+      "group": "core",
+      "purpose": "which_unknown_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0049,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "which zz_myshell_missing_command_701\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "which: no executable found for zz_myshell_missing_command_701\n"
+        }
+      ]
+    },
+    {
+      "name": "pwd_extra_argument_recovers",
+      "group": "core",
+      "purpose": "pwd_extra_argument_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0043,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "pwd extra\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "pwd: too many arguments\n"
+        }
+      ]
+    },
+    {
+      "name": "cd_missing_directory_recovers",
+      "group": "core",
+      "purpose": "cd_missing_directory_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0056,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd missing_dir\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "cd: No such file or directory\n"
+        }
+      ]
+    },
+    {
+      "name": "cd_too_many_arguments_recovers",
+      "group": "core",
+      "purpose": "cd_too_many_arguments_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0054,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd sub extra\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\ncd: too many arguments\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "leading_pipe_recovers",
+      "group": "core",
+      "purpose": "leading_pipe_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0044,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "| echo BAD\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\nmyshell: parse error\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "trailing_pipe_recovers",
+      "group": "core",
+      "purpose": "trailing_pipe_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0048,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD |\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\nmyshell: parse error\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "double_pipe_recovers",
+      "group": "core",
+      "purpose": "double_pipe_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0057,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD || /bin/cat\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\nmyshell: parse error\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "missing_input_target_recovers",
+      "group": "core",
+      "purpose": "missing_input_target_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0048,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD <\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "myshell: parse error\n"
+        }
+      ]
+    },
+    {
+      "name": "missing_output_target_recovers",
+      "group": "core",
+      "purpose": "missing_output_target_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0065,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD >\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "myshell: parse error\n"
+        }
+      ]
+    },
+    {
+      "name": "missing_append_target_recovers",
+      "group": "core",
+      "purpose": "missing_append_target_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0122,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD >>\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "myshell: parse error\n"
+        }
+      ]
+    },
+    {
+      "name": "consecutive_redirects_recovers",
+      "group": "core",
+      "purpose": "consecutive_redirects_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0076,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD > > target\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "myshell: parse error\n"
+        }
+      ]
+    },
+    {
+      "name": "unreadable_input_recovers",
+      "group": "core",
+      "purpose": "unreadable_input_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0084,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "/bin/cat < missing_input\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "missing_input: No such file or directory\n"
+        }
+      ]
+    },
+    {
+      "name": "output_directory_recovers",
+      "group": "core",
+      "purpose": "output_directory_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0055,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD > sub\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "sub: Is a directory\n"
+        }
+      ]
+    },
+    {
+      "name": "non_executable_file_recovers",
+      "group": "core",
+      "purpose": "non_executable_file_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0063,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "./notexec\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "./notexec: Permission denied\n"
+        }
+      ]
+    },
+    {
+      "name": "cd_error_preserves_directory",
+      "group": "core",
+      "purpose": "cd_error_preserves_directory",
+      "status": "pass",
+      "duration_seconds": 0.008,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd missing_dir\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>\n",
+          "stderr": "cd: No such file or directory\n"
+        }
+      ]
+    },
+    {
+      "name": "redirection_creates_file",
+      "group": "core",
+      "purpose": "redirection_creates_file",
+      "status": "pass",
+      "duration_seconds": 0.0082,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo payload > out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "redirection_truncates_file",
+      "group": "core",
+      "purpose": "redirection_truncates_file",
+      "status": "pass",
+      "duration_seconds": 0.01,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo new > out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "append_creates_file",
+      "group": "core",
+      "purpose": "append_creates_file",
+      "status": "pass",
+      "duration_seconds": 0.0123,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo first >> out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "append_preserves_file",
+      "group": "core",
+      "purpose": "append_preserves_file",
+      "status": "pass",
+      "duration_seconds": 0.0067,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo second >> out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "input_redirection",
+      "group": "core",
+      "purpose": "input_redirection",
+      "status": "pass",
+      "duration_seconds": 0.0079,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe copy < in\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alpha\nbeta\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "input_and_output_redirection",
+      "group": "core",
+      "purpose": "input_and_output_redirection",
+      "status": "pass",
+      "duration_seconds": 0.0049,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe copy < in > out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "redirection_without_spaces",
+      "group": "core",
+      "purpose": "redirection_without_spaces",
+      "status": "pass",
+      "duration_seconds": 0.0046,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "/bin/cat<in>out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "append_without_spaces",
+      "group": "core",
+      "purpose": "append_without_spaces",
+      "status": "pass",
+      "duration_seconds": 0.0052,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo new>>out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "stdout_restored_after_redirection",
+      "group": "core",
+      "purpose": "stdout_restored_after_redirection",
+      "status": "pass",
+      "duration_seconds": 0.0053,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo first > out\necho visible\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "visible\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "stderr_not_redirected_by_stdout_operator",
+      "group": "core",
+      "purpose": "stderr_not_redirected_by_stdout_operator",
+      "status": "pass",
+      "duration_seconds": 0.0046,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe out-err > out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "ERR\n"
+        }
+      ]
+    },
+    {
+      "name": "builtin_pwd_redirection",
+      "group": "core",
+      "purpose": "builtin_pwd_redirection",
+      "status": "pass",
+      "duration_seconds": 0.0032,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "pwd > out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pipeline_with_redirection",
+      "group": "core",
+      "purpose": "pipeline_with_redirection",
+      "status": "pass",
+      "duration_seconds": 0.0063,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe copy < in | <TOOLS_TMP>/probe copy > out\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pipe_stdout_redirect_overrides_pipe",
+      "group": "core",
+      "purpose": "pipe_stdout_redirect_overrides_pipe",
+      "status": "pass",
+      "duration_seconds": 0.0047,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo file > out | /bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pipeline_input_redirection_overrides_pipe",
+      "group": "core",
+      "purpose": "pipeline_input_redirection_overrides_pipe",
+      "status": "pass",
+      "duration_seconds": 0.0053,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo pipe | /bin/cat < in\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "file wins\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "commands_do_not_share_pipeline_arguments",
+      "group": "core",
+      "purpose": "commands_do_not_share_pipeline_arguments",
+      "status": "pass",
+      "duration_seconds": 0.0068,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo one | /bin/cat\necho two\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "one\ntwo\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pipeline_stages_have_distinct_arguments",
+      "group": "core",
+      "purpose": "pipeline_stages_have_distinct_arguments",
+      "status": "pass",
+      "duration_seconds": 0.0053,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo wrong | <TOOLS_TMP>/probe args right\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[right]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "nonfinal_cd_isolated_from_parent",
+      "group": "core",
+      "purpose": "nonfinal_cd_isolated_from_parent",
+      "status": "pass",
+      "duration_seconds": 0.0045,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd sub | /bin/cat\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "final_cd_isolated_from_parent",
+      "group": "core",
+      "purpose": "final_cd_isolated_from_parent",
+      "status": "fail",
+      "duration_seconds": 0.0053,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 337, in _\n    t.exact(\"echo ignored | cd sub\\npwd\\n\", str(t.root) + \"\\n\")\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'/pr[19 chars]h/4fvqm7257f1gx811xm31l9540000gn/T/myshell-case-kego05pv/sub\\n' != b'/pr[19 chars]h/4fvqm7257f1gx811xm31l9540000gn/T/myshell-case-kego05pv\\n'\n",
+      "transcripts": [
+        {
+          "script": "echo ignored | cd sub\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>/sub\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_suffix",
+      "group": "core",
+      "purpose": "glob_suffix",
+      "status": "pass",
+      "duration_seconds": 0.0057,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd glob\n<TOOLS_TMP>/probe args *.txt\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[alpha.txt]\n[x.txt]\n[beta.txt]\n[a.txt]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_prefix",
+      "group": "core",
+      "purpose": "glob_prefix",
+      "status": "pass",
+      "duration_seconds": 0.0062,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd glob\n<TOOLS_TMP>/probe args al*\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[alpha.txt]\n[alpine.log]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_middle",
+      "group": "core",
+      "purpose": "glob_middle",
+      "status": "fail",
+      "duration_seconds": 0.0061,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 357, in _\n    t.assertEqual(sorted(out.decode().splitlines()), sorted(\"[\" + s + \"]\" for s in expected))\nAssertionError: Lists differ: ['[a*l*.txt]'] != ['[alpha.txt]']\n\nFirst differing element 0:\n'[a*l*.txt]'\n'[alpha.txt]'\n\n- ['[a*l*.txt]']\n?     - ^\n\n+ ['[alpha.txt]']\n?      ^^^\n\n",
+      "transcripts": [
+        {
+          "script": "cd glob\n<TOOLS_TMP>/probe args a*l*.txt\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[a*l*.txt]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_multiple_stars",
+      "group": "core",
+      "purpose": "glob_multiple_stars",
+      "status": "pass",
+      "duration_seconds": 0.0054,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd glob\n<TOOLS_TMP>/probe args *l*.txt\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[alpha.txt]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_star_matches_zero_chars",
+      "group": "core",
+      "purpose": "glob_star_matches_zero_chars",
+      "status": "fail",
+      "duration_seconds": 0.0059,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 357, in _\n    t.assertEqual(sorted(out.decode().splitlines()), sorted(\"[\" + s + \"]\" for s in expected))\nAssertionError: Lists differ: ['[alpha.txt]'] != ['[a.txt]', '[alpha.txt]']\n\nFirst differing element 0:\n'[alpha.txt]'\n'[a.txt]'\n\nSecond list contains 1 additional elements.\nFirst extra element 1:\n'[alpha.txt]'\n\n- ['[alpha.txt]']\n+ ['[a.txt]', '[alpha.txt]']\n",
+      "transcripts": [
+        {
+          "script": "cd glob\n<TOOLS_TMP>/probe args a*.txt\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[alpha.txt]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_unmatched_literal",
+      "group": "core",
+      "purpose": "glob_unmatched_literal",
+      "status": "pass",
+      "duration_seconds": 0.0053,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd glob\n<TOOLS_TMP>/probe args z*.none\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[z*.none]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_relative_directory",
+      "group": "core",
+      "purpose": "glob_relative_directory",
+      "status": "pass",
+      "duration_seconds": 0.0046,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe args glob/al*.txt\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[glob/alpha.txt]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_absolute_directory",
+      "group": "core",
+      "purpose": "glob_absolute_directory",
+      "status": "fail",
+      "duration_seconds": 0.0048,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 374, in _\n    t.exact(PROBE + \" args \" + str(t.root / \"glob/al*.txt\") + \"\\n\",\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'[/p[32 chars]1gx811xm31l9540000gn/T/myshell-case-ecdiqybv/glob]\\n' != b'[/p[32 chars]1gx811xm31l9540000gn/T/myshell-case-ecdiqybv/glob/alpha.txt]\\n'\n",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe args <CASE_TMP>/glob/al*.txt\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[<CASE_TMP>/glob]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_redirection_single_match",
+      "group": "core",
+      "purpose": "glob_redirection_single_match",
+      "status": "pass",
+      "duration_seconds": 0.0047,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "/bin/cat < *.input\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "expanded\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "parser_read_chunk_boundaries",
+      "group": "core",
+      "purpose": "parser_read_chunk_boundaries",
+      "status": "pass",
+      "duration_seconds": 0.0095,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo aaa\necho aaaa\necho aaaaa\necho aaaaaaaaaaaaa\necho aaaaaaaaaaaaaa\necho aaaaaaaaaaaaaaa\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "aaa\naaaa\naaaaa\naaaaaaaaaaaaa\naaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "arguments_shrink_between_commands",
+      "group": "core",
+      "purpose": "arguments_shrink_between_commands",
+      "status": "pass",
+      "duration_seconds": 0.0067,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe args a b c d e\n<TOOLS_TMP>/probe args z\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[a]\n[b]\n[c]\n[d]\n[e]\n[z]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "nonzero_external_status_does_not_stop_shell",
+      "group": "core",
+      "purpose": "nonzero_external_status_does_not_stop_shell",
+      "status": "fail",
+      "duration_seconds": 0.0042,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 399, in _\n    t.exact(PROBE + \" status 7\\necho alive\\n\", \"alive\\n\")\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'' != b'alive\\n'\n",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe status 7\necho alive\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "output_missing_parent_recovers",
+      "group": "core",
+      "purpose": "output_missing_parent_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0047,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo BAD > no_such_parent/out\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "no_such_parent/out: No such file or directory\n"
+        }
+      ]
+    },
+    {
+      "name": "cd_to_regular_file_recovers",
+      "group": "core",
+      "purpose": "cd_to_regular_file_recovers",
+      "status": "pass",
+      "duration_seconds": 0.0055,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd regular\necho RECOVERED\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "RECOVERED\n",
+          "stderr": "cd: Not a directory\n"
+        }
+      ]
+    },
+    {
+      "name": "eof_without_newline",
+      "group": "review",
+      "purpose": "Execute a final nonempty line terminated by EOF.",
+      "status": "fail",
+      "duration_seconds": 0.0028,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 115, in check\n    t.exact(script(t) if callable(script) else script,\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'' != b'final\\n'\n",
+      "transcripts": [
+        {
+          "script": "echo final",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "tab_separates_arguments",
+      "group": "review",
+      "purpose": "tab_separates_arguments",
+      "status": "fail",
+      "duration_seconds": 0.0031,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 115, in check\n    t.exact(script(t) if callable(script) else script,\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'' != b'alpha beta\\n'\n",
+      "transcripts": [
+        {
+          "script": "echo\talpha\tbeta\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "echo\talpha\tbeta: command not found\n"
+        }
+      ]
+    },
+    {
+      "name": "crlf_batch_lines",
+      "group": "review",
+      "purpose": "crlf_batch_lines",
+      "status": "fail",
+      "duration_seconds": 0.0053,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 115, in check\n    t.exact(script(t) if callable(script) else script,\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'windows\\r\\n' != b'windows\\n'\n",
+      "transcripts": [
+        {
+          "script": "echo windows\r\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "windows\r\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "arguments_after_redirection",
+      "group": "review",
+      "purpose": "arguments_after_redirection",
+      "status": "fail",
+      "duration_seconds": 0.0085,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 424, in _\n    t.assertEqual((t.root / \"out\").read_bytes(), b\"first second\\n\")\nAssertionError: b'first\\n' != b'first second\\n'\n",
+      "transcripts": [
+        {
+          "script": "echo first > out second\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "cd_redirection_changes_parent_directory",
+      "group": "review",
+      "purpose": "cd_redirection_changes_parent_directory",
+      "status": "fail",
+      "duration_seconds": 0.0085,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 429, in _\n    t.exact(\"cd sub > out\\npwd\\n\", str(t.root / \"sub\") + \"\\n\")\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'/pr[39 chars]31l9540000gn/T/myshell-case-ranh8gf8\\ncd: too many arguments\\n' != b'/pr[39 chars]31l9540000gn/T/myshell-case-ranh8gf8/sub\\n'\n",
+      "transcripts": [
+        {
+          "script": "cd sub > out\npwd\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "<CASE_TMP>\ncd: too many arguments\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "exit_in_pipeline_preserves_parent",
+      "group": "review",
+      "purpose": "exit_in_pipeline_preserves_parent",
+      "status": "fail",
+      "duration_seconds": 0.0063,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 435, in _\n    t.exact(\"echo before | exit\\necho alive\\n\", \"alive\\n\")\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'' != b'alive\\n'\n",
+      "transcripts": [
+        {
+          "script": "echo before | exit\necho alive\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "missing_home_is_handled",
+      "group": "review",
+      "purpose": "missing_home_is_handled",
+      "status": "fail",
+      "duration_seconds": 0.0114,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 442, in _\n    out, err, rc = t.run_shell(\"echo alive\\n\", env=env)\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 92, in run_shell\n    self.assertGreaterEqual(proc.returncode, 0, \"terminated by signal: \" + repr(record))\nAssertionError: -11 not greater than or equal to 0 : terminated by signal: {'script': 'echo alive\\n', 'mode': 'stdin', 'returncode': -11, 'stdout': '', 'stderr': ''}\n",
+      "transcripts": [
+        {
+          "script": "echo alive\n",
+          "mode": "stdin",
+          "returncode": -11,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "glob_absolute_unmatched_preserves_token",
+      "group": "review",
+      "purpose": "glob_absolute_unmatched_preserves_token",
+      "status": "fail",
+      "duration_seconds": 0.0062,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 452, in _\n    t.exact(PROBE + \" args \" + token + \"\\n\", \"[\" + token + \"]\\n\")\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 97, in exact\n    self.assertEqual(out, expected.encode() if isinstance(expected, str) else expected)\nAssertionError: b'[/p[35 chars]811xm31l9540000gn/T/myshell-case-5bdo2a0q/glob]\\n' != b'[/p[35 chars]811xm31l9540000gn/T/myshell-case-5bdo2a0q/glob/absent*.none]\\n'\n",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe args <CASE_TMP>/glob/absent*.none\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[<CASE_TMP>/glob]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pipeline_large_payload",
+      "group": "stress",
+      "purpose": "pipeline_large_payload",
+      "status": "pass",
+      "duration_seconds": 0.0056,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe emit 1048576 | <TOOLS_TMP>/probe copy\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "pipeline_ten_stages",
+      "group": "stress",
+      "purpose": "pipeline_ten_stages",
+      "status": "pass",
+      "duration_seconds": 0.0105,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo flow | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "flow\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "repeated_commands",
+      "group": "stress",
+      "purpose": "repeated_commands",
+      "status": "pass",
+      "duration_seconds": 0.2084,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\necho repeat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "repeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "repeated_pipelines",
+      "group": "stress",
+      "purpose": "repeated_pipelines",
+      "status": "pass",
+      "duration_seconds": 0.1216,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\necho repeat | /bin/cat\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "repeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\nrepeat\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "fd_growth_after_pipelines",
+      "group": "stress",
+      "purpose": "fd_growth_after_pipelines",
+      "status": "fail",
+      "duration_seconds": 0.058,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 482, in _\n    t.assertLessEqual(counts[1], counts[0], \"pipe descriptors leaked into subsequent children\")\nAssertionError: 40 not less than or equal to 0 : pipe descriptors leaked into subsequent children\n",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe fds\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n/usr/bin/true | /bin/cat\n<TOOLS_TMP>/probe fds\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "0\n40\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "fd_growth_in_long_pipeline",
+      "group": "stress",
+      "purpose": "fd_growth_in_long_pipeline",
+      "status": "fail",
+      "duration_seconds": 0.0131,
+      "detail": "Traceback (most recent call last):\n  File \"<REVIEW_ROOT>/tests/run_tests.py\", line 493, in _\n    t.assertLessEqual(counts[1], counts[0], \"later pipeline stages inherit older read ends\")\nAssertionError: 24 not less than or equal to 0 : later pipeline stages inherit older read ends\n",
+      "transcripts": [
+        {
+          "script": "<TOOLS_TMP>/probe fds\n/usr/bin/true | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | <TOOLS_TMP>/probe fds\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "0\n24\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "memory_empty_input",
+      "group": "memory",
+      "purpose": "memory_empty_input",
+      "status": "pass",
+      "duration_seconds": 0.0026,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "memory_one_command",
+      "group": "memory",
+      "purpose": "memory_one_command",
+      "status": "pass",
+      "duration_seconds": 0.0037,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "echo alive\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "alive\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "memory_wildcard_many_matches",
+      "group": "memory",
+      "purpose": "memory_wildcard_many_matches",
+      "status": "pass",
+      "duration_seconds": 0.0076,
+      "detail": "",
+      "transcripts": [
+        {
+          "script": "cd glob\n<TOOLS_TMP>/probe args *.txt\n",
+          "mode": "stdin",
+          "returncode": 0,
+          "stdout": "[f09.txt]\n[f21.txt]\n[f20.txt]\n[f08.txt]\n[f22.txt]\n[f23.txt]\n[f27.txt]\n[f26.txt]\n[f24.txt]\n[f18.txt]\n[f19.txt]\n[f25.txt]\n[f28.txt]\n[f14.txt]\n[f00.txt]\n[f01.txt]\n[f15.txt]\n[f29.txt]\n[f03.txt]\n[f17.txt]\n[f16.txt]\n[f02.txt]\n[f06.txt]\n[f12.txt]\n[f13.txt]\n[f07.txt]\n[f11.txt]\n[f05.txt]\n[f04.txt]\n[f10.txt]\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "name": "interactive_command_and_exit",
+      "group": "interactive",
+      "purpose": "interactive_command_and_exit",
+      "status": "pass",
+      "duration_seconds": 0.0054,
+      "detail": "",
+      "transcripts": [
+        {
+          "mode": "pty",
+          "command": "echo INTERACTIVE_OK",
+          "stdout": "Welcome to my shell!\r\n<CASE_TMP>$ echo INTERACTIVE_OK\r\nINTERACTIVE_OK\r\n<CASE_TMP>$ exit\r\nExiting myshell\r\n"
+        }
+      ]
+    },
+    {
+      "name": "interactive_ctrl_d",
+      "group": "interactive",
+      "purpose": "interactive_ctrl_d",
+      "status": "pass",
+      "duration_seconds": 0.0041,
+      "detail": "",
+      "transcripts": [
+        {
+          "mode": "pty",
+          "command": "",
+          "stdout": "Welcome to my shell!\r\n<CASE_TMP>$ ^D\b\bExiting myshell\r\n"
+        }
+      ]
+    },
+    {
+      "name": "interactive_cd_updates_prompt",
+      "group": "interactive",
+      "purpose": "interactive_cd_updates_prompt",
+      "status": "pass",
+      "duration_seconds": 0.0053,
+      "detail": "",
+      "transcripts": [
+        {
+          "mode": "pty",
+          "command": "cd sub",
+          "stdout": "Welcome to my shell!\r\n<CASE_TMP>$ cd sub\r\n<CASE_TMP>/sub$ exit\r\nExiting myshell\r\n"
+        }
+      ]
+    }
+  ]
+}
