@@ -1,8 +1,6 @@
-#include <fcntl.h>
 #include "execute.c"
 #define BUFFER_SIZE 10
 
-char buf[BUFFER_SIZE];
 char *word;
 int home_path_len;
 int interactive = 0;
@@ -19,12 +17,18 @@ void print_prompt(){
 
 command* add_arg(char *arg, int len, command *end){
 	if(len == 0) return end;
+	arg_cnt++;
+
 	if(end->next == NULL) end->next = malloc(sizeof(command));
 	end = end->next;
-	if(end->arg) free(end->arg);
+
 	end->arg = malloc(sizeof(char)*(len+1));
+	end->len = len;
+
 	arg[len] = '\0';
 	strcpy(end->arg, arg);
+	if(arg_cnt > 1) end = process_wildcard(end);
+
 	return end;
 }
 
@@ -57,41 +61,70 @@ int main(int argc, char **argv){
 	//setup
 	home_path = getenv("HOME");
 	home_path_len = strlen(home_path);
-	if(getcwd(cwd, sizeof(cwd)) == NULL)
-		perror("getcwd:");
+	if(getcwd(cwd, sizeof(cwd)) == NULL) perror("getcwd:");
 	int word_max = 50, word_cur = 0;
 	word = malloc(word_max+1);
+	char buf[BUFFER_SIZE];
 	size_t rd;
 	cmd_start = malloc(sizeof(command));
 	command *cmd_end = cmd_start;
-	if(interactive) print_prompt();
+	pipe_start = malloc(sizeof(pipes));
+	pipe_end = pipe_start;
+	int parse_error = 0, comment = 0;
 
 	//start
+	if(interactive) print_prompt();
 	while((rd = read(0, buf, BUFFER_SIZE)) > 0){
 		for(int i=0;i<rd;++i){
 			if(buf[i] == '\n' || buf[i]=='\0'){
-				if(word_cur > 0){
-					cmd_end = add_arg(word, word_cur, cmd_end);
+				if(parse_error){
+					printf("myshell: parse error\n");
+					parse_error = 0;
 					word_cur = 0;
 				}
-				int ret = execute(cmd_start->next, cmd_end->next);
-				// if(ret == 1 || ret == 3) printf("failed to execute\n");
-				if(ret > 1){
-					exit(EXIT_SUCCESS);
+				else{
+					cmd_end = add_arg(word, word_cur, cmd_end);
+					word_cur = 0;
+					if(arg_cnt == 0 && pipe_start != pipe_end){
+						printf("myshell: parse error\n");
+					}
+					else if(arg_cnt > 0){
+						add_pipe(cmd_start->next);
+						int ret = execute();
+						// if(ret == 1 || ret == 3) printf("failed to execute\n");
+						if(ret > 1){
+							exit(EXIT_SUCCESS);
+						}
+					}
 				}
 
 				cmd_end = cmd_start;
+				pipe_end = pipe_start;
+				comment = 0;
 				if(interactive) print_prompt();
 			}
+			else if(parse_error || comment) continue;
 			else if(buf[i] == ' '){
 				cmd_end = add_arg(word, word_cur, cmd_end);
 				word_cur = 0;
 			}
-			else if(buf[i] == '<' || buf[i] == '|'){
+			else if(buf[i] == '|'){
+				cmd_end = add_arg(word, word_cur, cmd_end);
+				word_cur = 0;
+				if(arg_cnt == 0) parse_error = 1;
+				else add_pipe(cmd_start->next);
+				cmd_end = cmd_start;
+			}
+			else if(buf[i] == '<'){
 				cmd_end = add_arg(word, word_cur, cmd_end);
 				word[0] = buf[i];
 				cmd_end = add_arg(word, 1, cmd_end);
 				word_cur = 0;
+			}
+			else if(buf[i] == '#'){
+				cmd_end = add_arg(word, word_cur, cmd_end);
+				word_cur = 0;
+				comment = 1;
 			}
 			else if(buf[i] == '>'){
 				if(word_cur > 0){

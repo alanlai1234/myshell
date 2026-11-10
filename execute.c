@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -8,10 +9,19 @@
 
 typedef struct command{
 	char *arg;
+	int len;
 	struct command *next;
 }command;
 
+typedef struct pipes{
+	char **input;
+	int cnt;
+	struct pipes *next;
+}pipes;
+
 char *home_path, cwd[1024];
+pipes *pipe_start, *pipe_end;
+int arg_cnt = 0;
 
 static const char *find_executable(const char *name, char *path, size_t size)
 {
@@ -100,25 +110,16 @@ int child_run(char **input, int len)
     return 1;
 }
 
-void cmd_cd(char **input, int len){
-	if(len > 2) printf("cd: too many arguments\n");
-	else if (input[1] == NULL){
+void cmd_cd(pipes *cur){
+	if(cur->cnt > 2) printf("cd: too many arguments\n");
+	else if (cur->input[1] == NULL){
 		if (chdir(getenv("HOME")) == -1) perror("cd");
 	}
-	else if (chdir(input[1]) == -1) perror("cd");
+	else if (chdir(cur->input[1]) == -1) perror("cd");
 	if(getcwd(cwd, sizeof(cwd)) == NULL) printf("cwd too small\n");
 }
 
-int run(command *start, int cnt, int *prev_pipe, int is_pipe, int *isexit){
-	char **input = malloc(sizeof(char*)*(cnt+1));
-	for(int i=0;i<cnt;++i){
-		input[i] = start->arg;
-		start = start->next;
-	}
-	input[cnt] = NULL;
-
-	*isexit |= !strcmp(input[0], "exit");
-
+int run(pipes *cur, int *prev_pipe, int is_pipe){
 	int p[2];
 	if(is_pipe) if(pipe(p) == -1) return -1;
 
@@ -134,23 +135,89 @@ int run(command *start, int cnt, int *prev_pipe, int is_pipe, int *isexit){
 			close(p[1]);
 			close(p[0]);
 		}
-		int ret = child_run(input, cnt);
+
+		//detect redirection
+		int redirect = 0; //0:none, 1:<, 2:>, 3:>>
+		int end = -1;
+		for(int i=0;i<cur->cnt;++i){
+			if(!strcmp(cur->input[i], "<")){
+				if(end == -1) end = i;
+				if(redirect != 0){
+					fprintf(stderr, "myshell: parse error\n");
+					_exit(1);
+				}
+				redirect = 1;
+			}
+			else if(!strcmp(cur->input[i], ">")){
+				if(end == -1) end = i;
+				if(redirect != 0){
+					fprintf(stderr, "myshell: parse error\n");
+					_exit(1);
+				}
+				redirect = 2;
+			}
+			else if(!strcmp(cur->input[i], ">>")){
+				if(end == -1) end = i;
+				if(redirect != 0){
+					fprintf(stderr, "myshell: parse error\n");
+					_exit(1);
+				}
+				redirect = 3;
+			}
+			else if(redirect == 1){
+				int fd = open(cur->input[i], O_RDONLY);
+				if(fd < 0){
+					perror(cur->input[i]);
+					_exit(1);
+				}
+				if(dup2(fd, STDIN_FILENO) == -1) _exit(1);
+				redirect = 0;
+			}
+			else if(redirect == 2){
+				int fd = open(cur->input[i], O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP);
+				if(fd < 0){
+					perror(cur->input[i]);
+					_exit(1);
+				}
+				if(dup2(fd, STDOUT_FILENO) == -1) _exit(1);
+				redirect = 0;
+			}
+			else if(redirect == 3){
+				int fd = open(cur->input[i], O_WRONLY|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR|S_IRGRP);
+				if(fd < 0){
+					perror(cur->input[i]);
+					_exit(1);
+				}
+				if(dup2(fd, STDOUT_FILENO) == -1) _exit(1);
+				redirect = 0;
+			}
+		}
+		if(redirect != 0){
+			fprintf(stderr, "myshell: parse error\n");
+			_exit(1);
+		}
+
+		if(end != -1){
+			cur->input[end] = NULL;
+			cur->cnt = end;
+		}
+		int ret = child_run(cur->input, cur->cnt);
 		_exit(ret);
 	}
 
-	if(!strcmp(input[0], "cd") && !is_pipe) cmd_cd(input, cnt);
+	if(!strcmp(cur->input[0], "cd") && !is_pipe){
+		cmd_cd(cur);
+	}
 
 	if(is_pipe){
 		*prev_pipe = p[0];
 		close(p[1]);
 	}
-	free(input);
 	return c;
 }
 
-command* process_wildcard(command *cur, int *total){
-	int len = strlen(cur->arg);
-	int l, have = 0;
+command* process_wildcard(command *cur){
+	int l, have = 0, len = cur->len;
 	for(l=len-1;l>=0;--l){
 		if(cur->arg[l] == '/') break;
 		if(cur->arg[l] == '*') have=1;
@@ -199,19 +266,20 @@ command* process_wildcard(command *cur, int *total){
 			}
 		}
 		if(dp[name_len][len-l-1]){
-			char *new = malloc(sizeof(char)*(l+1+strlen(en->d_name)+1));
+			char *new = malloc(sizeof(char)*(l+1+name_len+1));
 			if(l > -1) strncpy(new, token, l+1);
 			strcpy(new+l+1, en->d_name);
-			if(!cnt)
+			if(!cnt){
 				cur->arg = new;
-			else{
-				command *nxt = cur->next;
-				cur->next = malloc(sizeof(command));
-				cur = cur->next;
-				cur->next = nxt;
-				cur->arg = new;
+				cur->len = l+1+name_len;
 			}
-			printf("%s\n", cur->arg);
+			else{
+				if(cur->next == NULL) cur->next = malloc(sizeof(command));
+				cur = cur->next;
+				if(cur->arg) free(cur->arg); // notice if this creates bug
+				cur->arg = new;
+				cur->len = l+1+name_len;
+			}
 			cnt++;
 		}
 		for(int i=0;i<=name_len;++i)
@@ -219,42 +287,41 @@ command* process_wildcard(command *cur, int *total){
 		free(dp);
 	}
 	if(cnt > 0){
-		*total += cnt-1;
+		arg_cnt += cnt-1;
 		free(token);
 	}
 	closedir(dir);
 	return cur;
 }
 
-int execute(command *start, command *end){
+void add_pipe(command *start){
+	pipe_end->next = malloc(sizeof(pipes));
+	pipe_end = pipe_end->next;
+	pipe_end->input = malloc(sizeof(char*)*(arg_cnt+1));
+	pipe_end->cnt = arg_cnt;
+	for(int i=0;i<arg_cnt;++i){
+		pipe_end->input[i] = start->arg;
+		start = start->next;
+	}
+	pipe_end->input[arg_cnt] = NULL;
+	arg_cnt = 0;
+}
+
+int execute(){
 	int prev_pipe = -1;
 	int cmd_cnt = 0;
 	int last_pid, exits = 0;
-	while(start!=end){
-		command *tmp = start;
-		int cnt = 0;
-		cmd_cnt++;
-		while(tmp!=end){
-			if(!strcmp(tmp->arg, "|")){
-				int rt = run(start, cnt, &prev_pipe, 1, &exits);
-				if(rt == -1) perror("failed to create child process or pipe\n");
-				else cmd_cnt++, last_pid = rt;
-				start = tmp->next;
-				break;
-			}
-			else{
-				if(cnt > 0) tmp = process_wildcard(tmp, &cnt);
-				tmp = tmp->next;
-				cnt++;
-			}
-		}
-		if(tmp==end){
-			int rt = run(start, cnt, &prev_pipe, 0, &exits);
-			if(rt == -1) perror("failed to create child process or pipe\n");
-			else cmd_cnt++, last_pid = rt;
-			start = tmp;
-		}
+	pipes *start = pipe_start->next;
+	while(start){
+		if(!strcmp(start->input[0], "exit")) exits = 1;
+
+		int rt = run(start, &prev_pipe, start->next!=NULL);
+		if(rt == -1) perror("failed to create child process or pipe\n");
+		else cmd_cnt++, last_pid = rt;
+
+		start = start->next;
 	}
+
 	int last_status;
 	//TODO: handle failed wait
 	waitpid(last_pid, &last_status, 0);
