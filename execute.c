@@ -13,115 +13,95 @@ typedef struct command{
 
 char *home_path, cwd[1024];
 
-int child_run(char **input, int len){
-	// still run built in commands here to simplify exit status processing
-	if(!strcmp(input[0], "exit")){
-		return 0;
-	}
-	else if(!strcmp(input[0], "cd")){
-		if(len > 2) return 1;
-		else if (input[1] == NULL){
-			if (chdir(getenv("HOME")) == -1) return 1;
-		}
-		else if (chdir(input[1]) == -1) return 1;
-		return 0;
-	}
-    else
-    {
-        //====================================================================
-        // input route check
-        int slash = 0;
-        int length = strlen(input[0]);
-        for (int x = 0; x < length; x++)
-        {
-            if (input[0][x] == '/')
-            {
-                printf("Found slash\n");
-                slash = 1;
-                break;
-            }
+static const char *find_executable(const char *name, char *path, size_t size)
+{
+    if (strchr(name, '/') != NULL) {
+        if (access(name, X_OK) == 0) {
+            return name;
         }
-
-        if (slash == 0)
-        {
-            printf("Slash not found\n");
-        }
-
-        if (slash == 1)
-        {
-            if (access(input[0], X_OK) == -1)
-            {
-                perror(input[0]);
-            }else{
-                pid_t pid = fork();
-                if (pid == -1)
-                {
-                    perror("fork");
-                }
-                else if (pid == 0)
-                {
-                    execv(input[0], input);
-
-                    perror("execv");
-                    _exit(1);
-                }
-                else
-                {
-                    int status;
-                    waitpid(pid, &status, 0);
-                }
-            }
-        }
-        //====================================================================
-        // input command check
-        const char *directories[] = {
-            "/usr/local/bin",
-            "/usr/bin",
-            "/bin"};
-        int found = 0;
-        char path[1024];
-        for (int x = 0; x < 3; x++)
-        {
-            snprintf(path, sizeof(path), "%s/%s", directories[x], input[0]);
-
-            if (access(path, X_OK) == 0)
-            {
-                found = 1;
-                printf("Found command\n");
-                break;
-            }
-        }
-        if (found == 0)
-        {
-            printf("command not found\n");
-        }
-        if (found == 1)
-        {
-            if (access(path, X_OK) == -1)
-            {
-                perror(path);
-            }else{
-                pid_t pid = fork();
-                if (pid == -1)
-                {
-                    perror("fork");
-                }
-                else if (pid == 0)
-                {
-                    execv(path, (path,input));
-
-                     perror("execv");
-                    _exit(1);
-                }
-                else
-                {
-                    int status;
-                    waitpid(pid, &status, 0);
-                }
-            }
-        } 
+        return NULL;
     }
-	return 0;
+
+    const char *directories[] = {"/usr/local/bin", "/usr/bin", "/bin"};
+
+    for (size_t i = 0; i < sizeof(directories) / sizeof(directories[0]); i++) {
+        int n = snprintf(path, size, "%s/%s", directories[i], name);
+        if (n >= 0 && (size_t)n < size && access(path, X_OK) == 0) {
+            return path;
+        }
+    }
+
+    return NULL;
+}
+
+int child_run(char **input, int len)
+{
+    if (len == 0) {
+        return 1;
+    }
+
+    // [隊友原本的分支] exit 和 cd
+    if (strcmp(input[0], "exit") == 0) {
+        return 0;
+    }
+
+    if (strcmp(input[0], "cd") == 0) {
+        if (len > 2) return 1;
+        if (input[1] == NULL) {
+            if (chdir(getenv("HOME")) == -1) return 1;
+        } else if (chdir(input[1]) == -1) {
+            return 1;
+        }
+        return 0;
+    }
+
+    // [我們的 launcher] pwd、which 和外部指令
+    char path[1024];
+
+    if (strcmp(input[0], "pwd") == 0) {
+        if (len != 1) {
+            fprintf(stderr, "pwd: too many arguments\n");
+            return 1;
+        }
+        if (getcwd(path, sizeof(path)) == NULL) {
+            perror("pwd");
+            return 1;
+        }
+        return dprintf(STDOUT_FILENO, "%s\n", path) < 0 ? 1 : 0;
+    }
+
+    if (strcmp(input[0], "which") == 0) {
+        if (len < 2) {
+            fprintf(stderr, "which: missing argument\n");
+            return 1;
+        }
+
+        int failed = 0;
+        for (int i = 1; i < len; i++) {
+            const char *found = find_executable(input[i], path, sizeof(path));
+            if (found == NULL) {
+                fprintf(stderr, "which: no executable found for %s\n", input[i]);
+                failed = 1;
+            } else if (dprintf(STDOUT_FILENO, "%s\n", found) < 0) {
+                failed = 1;
+            }
+        }
+        return failed;
+    }
+
+    const char *found = find_executable(input[0], path, sizeof(path));
+    if (found == NULL) {
+        if (strchr(input[0], '/') != NULL) {
+            perror(input[0]);
+        } else {
+            fprintf(stderr, "%s: command not found\n", input[0]);
+        }
+        return 1;
+    }
+
+    execv(found, input);
+    perror(found);
+    return 1;
 }
 
 void cmd_cd(char **input, int len){
