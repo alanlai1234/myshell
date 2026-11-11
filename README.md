@@ -1,7 +1,7 @@
 # myshell
 Alan Lai, kl1210,Cheng Chan Lee, cl1814
 
-Case	What we tested	Expected result
+Case	What we tested	Expected result\]n
 01	Pathname	/bin/echo PATH_OK prints PATH_OK.
 02	Bare name	echo BARE_NAME_OK finds echo and prints BARE_NAME_OK.
 03	Built-in pwd	Prints the starting working directory.
