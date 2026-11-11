@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <signal.h>
 
 typedef struct command{
 	char *arg;
@@ -21,8 +22,7 @@ typedef struct pipes{
 
 char *home_path, cwd[1024];
 pipes *pipe_start, *pipe_end;
-int arg_cnt = 0;
-extern int interactive;
+int arg_cnt = 0, interactive = 0;
 
 static const char *find_executable(const char *name, char *path, size_t size)
 {
@@ -113,8 +113,7 @@ int child_run(char **input, int len)
 
 int cmd_cd(pipes *cur){
 	char *target = home_path;
-	if(cur->cnt > 1 && strcmp(cur->input[1], "<") &&
-	   strcmp(cur->input[1], ">") && strcmp(cur->input[1], ">>"))
+	if(cur->cnt > 1 && strcmp(cur->input[1], "<") && strcmp(cur->input[1], ">") && strcmp(cur->input[1], ">>"))
 		target = cur->input[1];
 	if(chdir(target) == -1){
 		perror("cd");
@@ -154,12 +153,15 @@ int run(pipes *cur, int *prev_pipe, int is_pipe){
 			}
 			if(fd != STDIN_FILENO) close(fd);
 		}
+
 		if(is_pipe){
 			if(dup2(p[1], STDOUT_FILENO) == -1) _exit(1);
 			close(p[1]);
 			close(p[0]);
 		}
-
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		signal(SIGTSTP, SIG_DFL);
 		//detect redirection
 		int redirect = 0; //0:none, 1:<, 2:>, 3:>>
 		int end = -1;
@@ -232,6 +234,7 @@ int run(pipes *cur, int *prev_pipe, int is_pipe){
 		_exit(ret);
 	}
 
+	if(!strcmp(cur->input[0], "cd") && !is_pipe) cmd_cd(cur);
 	if(*prev_pipe != -1) close(*prev_pipe);
 	*prev_pipe = -1;
 	if(is_pipe){
@@ -251,7 +254,7 @@ command* process_wildcard(command *cur){
 
 	DIR *dir;
 	if(l > -1){
-		char *path = strndup(cur->arg, l == 0 ? 1 : l);
+		char *path = strndup(cur->arg, l == 0 ? 1 : l); //test
 		if(path == NULL) return cur;
 		dir = opendir(path);
 		free(path);
@@ -263,7 +266,7 @@ command* process_wildcard(command *cur){
 	char *token = cur->arg;
 	int cnt = 0;
 	while((en = readdir(dir))){
-		if(en->d_name[0] == '.' && token[l+1] != '.') continue;
+		if(en->d_name[0] == '.' && token[l+1] == '*') continue; //test
 
 		int name_len = strlen(en->d_name);
 		int **dp = malloc(sizeof(int*)*(name_len+1));
@@ -350,24 +353,24 @@ int execute(){
 
 	int status;
 	if(last_pid != -1){
-		pid_t waited;
-		do {
-			waited = waitpid(last_pid, &status, 0);
-		} while(waited == -1 && errno == EINTR);
-		if(waited == -1){
+		if(waitpid(last_pid, &status, 0) == -1){
 			perror("waitpid");
 			failed = 1;
 		}
-		else{
+		else if(!failed){
 			cmd_cnt--;
-			if(!failed && WIFEXITED(status)){
+			if (WIFEXITED(status)){
 				int code = WEXITSTATUS(status);
 				failed = code != 0;
-				if(interactive && failed) printf("Exited with status %d\n", code);
+				if (code && interactive) printf("Exited with status %d\n", code);
 			}
-			else if(!failed && WIFSIGNALED(status)){
+			else if (WIFSIGNALED(status)) {
+				int signal_number = WTERMSIG(status);
 				failed = 1;
-				if(interactive) printf("Terminated by signal %s\n", strsignal(WTERMSIG(status)));
+				printf("Terminated by signal %d\n", signal_number);
+			}
+			else if (WIFSTOPPED(status)) {
+				printf("Stopped by signal %d\n", WSTOPSIG(status));
 			}
 		}
 	}
@@ -375,9 +378,6 @@ int execute(){
 		if(wait(NULL) != -1) cmd_cnt--;
 		else if(errno != EINTR) break;
 	}
-
-	if(!failed && first && first->next == NULL && !strcmp(first->input[0], "cd"))
-		failed = cmd_cd(first);
 
 	while(first){
 		pipes *next = first->next;
@@ -387,7 +387,6 @@ int execute(){
 		first = next;
 	}
 	pipe_start->next = NULL;
-	pipe_end = pipe_start;
-	// Keep ordinary status separate from the exit flag expected by main.
-	return failed + (exits ? 2 : 0);
+
+	return exits;
 }

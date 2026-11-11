@@ -3,7 +3,6 @@
 
 char *word;
 int home_path_len;
-int interactive = 0;
 
 command *cmd_start;
 
@@ -71,6 +70,10 @@ int main(int argc, char **argv){
 	pipe_start = malloc(sizeof(pipes));
 	pipe_end = pipe_start;
 	int parse_error = 0, comment = 0;
+	//signal
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 
 	//start
 	if(interactive) print_prompt();
@@ -91,8 +94,7 @@ int main(int argc, char **argv){
 					else if(arg_cnt > 0){
 						add_pipe(cmd_start->next);
 						int ret = execute();
-						// if(ret == 1 || ret == 3) printf("failed to execute\n");
-						if(ret > 1){
+						if(ret == 1){
 							exit(EXIT_SUCCESS);
 						}
 					}
