@@ -1,0 +1,59 @@
+# Create fixtures for the batch tests.
+mkdir -p p3-test-fixtures/sub
+echo INPUT_OK > p3-test-fixtures/input.txt
+echo B > p3-test-fixtures/wild-b.txt
+echo A > p3-test-fixtures/wild-.txt
+echo IGNORE > p3-test-fixtures/wild-other.log
+touch p3-test-fixtures/not-executable
+chmod 644 p3-test-fixtures/not-executable
+
+echo CASE_01_PATHNAME
+/bin/echo PATH_OK
+
+echo CASE_02_BARE_NAME
+echo BARE_NAME_OK
+
+echo CASE_03_PWD
+pwd
+
+echo CASE_04_WHICH
+which echo /bin/echo
+
+echo CASE_05_ACCESS
+which ./p3-test-fixtures/not-executable
+echo CONTINUED_AFTER_FAILED_WHICH
+
+echo CASE_06_CD_AND_PWD
+cd p3-test-fixtures/sub
+pwd
+cd ../..
+pwd
+
+echo CASE_07_WILDCARD
+echo p3-test-fixtures/wild-*.txt
+
+echo CASE_08_INPUT_REDIRECTION
+cat < p3-test-fixtures/input.txt
+
+echo CASE_09_OUTPUT_AND_APPEND
+echo OLD > p3-test-fixtures/output.txt
+echo NEW > p3-test-fixtures/output.txt
+echo APPENDED >> p3-test-fixtures/output.txt
+cat p3-test-fixtures/output.txt
+
+echo CASE_10_PIPE
+echo PIPE_OK | cat
+
+echo CASE_11_PIPELINE
+echo pipeline | tr a-z A-Z | cat
+
+echo CASE_12_WILDCARD_AND_PIPE
+cat p3-test-fixtures/wild-*.txt | sort
+
+echo CASE_13_INPUT_AND_OUTPUT_REDIRECTION
+cat < p3-test-fixtures/input.txt > p3-test-fixtures/copy.txt
+cat p3-test-fixtures/copy.txt
+
+echo CASE_14_EXIT
+exit ignored_argument
+echo SHOULD_NOT_RUN
