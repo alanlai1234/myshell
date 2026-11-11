@@ -22,6 +22,7 @@ typedef struct pipes{
 char *home_path, cwd[1024];
 pipes *pipe_start, *pipe_end;
 int arg_cnt = 0;
+extern int interactive;
 
 static const char *find_executable(const char *name, char *path, size_t size)
 {
@@ -50,22 +51,22 @@ int child_run(char **input, int len)
         return 1;
     }
 
-    // [隊友原本的分支] exit 和 cd
     if (strcmp(input[0], "exit") == 0) {
         return 0;
     }
 
     if (strcmp(input[0], "cd") == 0) {
-        if (len > 2) return 1;
-        if (input[1] == NULL) {
-            if (chdir(getenv("HOME")) == -1) return 1;
-        } else if (chdir(input[1]) == -1) {
+        if (len > 2) {
+            fprintf(stderr, "cd: too many arguments\n");
+            return 1;
+        }
+        if (chdir(len == 1 ? home_path : input[1]) == -1) {
+            perror("cd");
             return 1;
         }
         return 0;
     }
 
-    // [我們的 launcher] pwd、which 和外部指令
     char path[1024];
 
     if (strcmp(input[0], "pwd") == 0) {
@@ -110,13 +111,20 @@ int child_run(char **input, int len)
     return 1;
 }
 
-void cmd_cd(pipes *cur){
-	if(cur->cnt > 2) printf("cd: too many arguments\n");
-	else if (cur->input[1] == NULL){
-		if (chdir(getenv("HOME")) == -1) perror("cd");
+int cmd_cd(pipes *cur){
+	char *target = home_path;
+	if(cur->cnt > 1 && strcmp(cur->input[1], "<") &&
+	   strcmp(cur->input[1], ">") && strcmp(cur->input[1], ">>"))
+		target = cur->input[1];
+	if(chdir(target) == -1){
+		perror("cd");
+		return 1;
 	}
-	else if (chdir(cur->input[1]) == -1) perror("cd");
-	if(getcwd(cwd, sizeof(cwd)) == NULL) printf("cwd too small\n");
+	if(getcwd(cwd, sizeof(cwd)) == NULL){
+		perror("getcwd");
+		return 1;
+	}
+	return 0;
 }
 
 int run(pipes *cur, int *prev_pipe, int is_pipe){
@@ -124,11 +132,27 @@ int run(pipes *cur, int *prev_pipe, int is_pipe){
 	if(is_pipe) if(pipe(p) == -1) return -1;
 
 	int c = fork();
-	if(c == -1) return -1;
+	if(c == -1){
+		int saved_errno = errno;
+		if(is_pipe){
+			close(p[0]);
+			close(p[1]);
+		}
+		errno = saved_errno;
+		return -1;
+	}
 	if(c == 0){
 		if(*prev_pipe != -1){
 			if(dup2(*prev_pipe, STDIN_FILENO) == -1) _exit(1);
 			close(*prev_pipe);
+		}
+		else if(!interactive){
+			int fd = open("/dev/null", O_RDONLY);
+			if(fd < 0 || dup2(fd, STDIN_FILENO) == -1){
+				perror("/dev/null");
+				_exit(1);
+			}
+			if(fd != STDIN_FILENO) close(fd);
 		}
 		if(is_pipe){
 			if(dup2(p[1], STDOUT_FILENO) == -1) _exit(1);
@@ -171,6 +195,7 @@ int run(pipes *cur, int *prev_pipe, int is_pipe){
 					_exit(1);
 				}
 				if(dup2(fd, STDIN_FILENO) == -1) _exit(1);
+				if(fd != STDIN_FILENO) close(fd);
 				redirect = 0;
 			}
 			else if(redirect == 2){
@@ -180,6 +205,7 @@ int run(pipes *cur, int *prev_pipe, int is_pipe){
 					_exit(1);
 				}
 				if(dup2(fd, STDOUT_FILENO) == -1) _exit(1);
+				if(fd != STDOUT_FILENO) close(fd);
 				redirect = 0;
 			}
 			else if(redirect == 3){
@@ -189,6 +215,7 @@ int run(pipes *cur, int *prev_pipe, int is_pipe){
 					_exit(1);
 				}
 				if(dup2(fd, STDOUT_FILENO) == -1) _exit(1);
+				if(fd != STDOUT_FILENO) close(fd);
 				redirect = 0;
 			}
 		}
@@ -205,10 +232,8 @@ int run(pipes *cur, int *prev_pipe, int is_pipe){
 		_exit(ret);
 	}
 
-	if(!strcmp(cur->input[0], "cd") && !is_pipe){
-		cmd_cd(cur);
-	}
-
+	if(*prev_pipe != -1) close(*prev_pipe);
+	*prev_pipe = -1;
 	if(is_pipe){
 		*prev_pipe = p[0];
 		close(p[1]);
@@ -226,18 +251,10 @@ command* process_wildcard(command *cur){
 
 	DIR *dir;
 	if(l > -1){
-		if(cur->arg[0] == '/'){
-			cur->arg[l] = '\0';
-			dir = opendir(cur->arg);
-		}
-		else{
-			char *full_path = malloc(sizeof(char)*(sizeof(cwd)+l));
-			strcpy(full_path, cwd);
-			strcat(full_path, "/");
-			strncat(full_path, cur->arg, l);
-			dir = opendir(full_path);
-			free(full_path);
-		}
+		char *path = strndup(cur->arg, l == 0 ? 1 : l);
+		if(path == NULL) return cur;
+		dir = opendir(path);
+		free(path);
 	}
 	else dir = opendir(cwd);
 	if(!dir) return cur;
@@ -246,7 +263,7 @@ command* process_wildcard(command *cur){
 	char *token = cur->arg;
 	int cnt = 0;
 	while((en = readdir(dir))){
-		if(en->d_name[0] == '.') continue;
+		if(en->d_name[0] == '.' && token[l+1] != '.') continue;
 
 		int name_len = strlen(en->d_name);
 		int **dp = malloc(sizeof(int*)*(name_len+1));
@@ -260,7 +277,7 @@ command* process_wildcard(command *cur){
 			dp[i] = calloc(len-l, sizeof(int));
 			for(int j=1;j<len-l;++j){
 				if(token[l+j] == '*')
-					dp[i][j] = dp[i-1][j] | dp[i-1][j-1];
+					dp[i][j] = dp[i-1][j] | dp[i][j-1];
 				else if(token[l+j] == en->d_name[i-1])
 					dp[i][j] = dp[i-1][j-1];
 			}
@@ -274,7 +291,7 @@ command* process_wildcard(command *cur){
 				cur->len = l+1+name_len;
 			}
 			else{
-				if(cur->next == NULL) cur->next = malloc(sizeof(command));
+				if(cur->next == NULL) cur->next = calloc(1, sizeof(command));
 				cur = cur->next;
 				if(cur->arg) free(cur->arg); // notice if this creates bug
 				cur->arg = new;
@@ -295,12 +312,13 @@ command* process_wildcard(command *cur){
 }
 
 void add_pipe(command *start){
-	pipe_end->next = malloc(sizeof(pipes));
+	pipe_end->next = calloc(1, sizeof(pipes));
 	pipe_end = pipe_end->next;
 	pipe_end->input = malloc(sizeof(char*)*(arg_cnt+1));
 	pipe_end->cnt = arg_cnt;
 	for(int i=0;i<arg_cnt;++i){
 		pipe_end->input[i] = start->arg;
+		start->arg = NULL;
 		start = start->next;
 	}
 	pipe_end->input[arg_cnt] = NULL;
@@ -310,25 +328,66 @@ void add_pipe(command *start){
 int execute(){
 	int prev_pipe = -1;
 	int cmd_cnt = 0;
-	int last_pid, exits = 0;
-	pipes *start = pipe_start->next;
+	int last_pid = -1, exits = 0, failed = 0;
+	pipes *first = pipe_start->next;
+	pipes *start = first;
 	while(start){
 		if(!strcmp(start->input[0], "exit")) exits = 1;
 
 		int rt = run(start, &prev_pipe, start->next!=NULL);
-		if(rt == -1) perror("failed to create child process or pipe\n");
-		else cmd_cnt++, last_pid = rt;
+		if(rt == -1){
+			perror("failed to create child process or pipe");
+			failed = 1;
+			break;
+		}
+		cmd_cnt++;
+		last_pid = rt;
 
 		start = start->next;
 	}
 
-	int last_status;
-	//TODO: handle failed wait
-	waitpid(last_pid, &last_status, 0);
-	cmd_cnt--;
-	while(cmd_cnt--) wait(NULL);
-	//0:fail, 1:success, 2:fail+exit, 3:success+exit
-	last_status = WEXITSTATUS(last_status);
-	if(exits) last_status += 2;
-	return last_status;
+	if(prev_pipe != -1) close(prev_pipe);
+
+	int status;
+	if(last_pid != -1){
+		pid_t waited;
+		do {
+			waited = waitpid(last_pid, &status, 0);
+		} while(waited == -1 && errno == EINTR);
+		if(waited == -1){
+			perror("waitpid");
+			failed = 1;
+		}
+		else{
+			cmd_cnt--;
+			if(!failed && WIFEXITED(status)){
+				int code = WEXITSTATUS(status);
+				failed = code != 0;
+				if(interactive && failed) printf("Exited with status %d\n", code);
+			}
+			else if(!failed && WIFSIGNALED(status)){
+				failed = 1;
+				if(interactive) printf("Terminated by signal %s\n", strsignal(WTERMSIG(status)));
+			}
+		}
+	}
+	while(cmd_cnt > 0){
+		if(wait(NULL) != -1) cmd_cnt--;
+		else if(errno != EINTR) break;
+	}
+
+	if(!failed && first && first->next == NULL && !strcmp(first->input[0], "cd"))
+		failed = cmd_cd(first);
+
+	while(first){
+		pipes *next = first->next;
+		for(int i = 0; i < first->cnt; i++) free(first->input[i]);
+		free(first->input);
+		free(first);
+		first = next;
+	}
+	pipe_start->next = NULL;
+	pipe_end = pipe_start;
+	// Keep ordinary status separate from the exit flag expected by main.
+	return failed + (exits ? 2 : 0);
 }
